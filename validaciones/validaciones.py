@@ -1,5 +1,15 @@
 """Validaciones de datos compartidas por los modulos del proyecto."""
 
+import re
+
+
+EMAIL_PATTERN = re.compile(
+    r"[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+"
+    r"(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@"
+    r"(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+"
+    r"[A-Za-z]{2,63}"
+)
+
 
 def validar_texto_requerido(valor: str, campo: str) -> str:
     """Quitar espacios externos y rechazar campos vacios o no textuales."""
@@ -11,6 +21,24 @@ def validar_texto_requerido(valor: str, campo: str) -> str:
         raise ValueError(f"{campo} no puede estar vacio")
 
     return valor
+
+
+def validar_correo(correo: str) -> str:
+    """Validar un correo común con parte local y dominio completos."""
+    correo = validar_texto_requerido(correo, "El correo")
+    parte_local, separador, _dominio = correo.partition("@")
+    if (
+        not separador
+        or len(correo) > 254
+        or len(parte_local) > 64
+        or not EMAIL_PATTERN.fullmatch(correo)
+    ):
+        raise ValueError(
+            "El correo debe tener un formato válido, por ejemplo "
+            "nombre@dominio.com"
+        )
+
+    return correo
 
 
 def validar_telefono_celular(telefono: str) -> str:

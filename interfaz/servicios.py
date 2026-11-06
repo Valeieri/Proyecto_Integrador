@@ -35,9 +35,10 @@ def crear_pestana_servicios(
         contenedor,
         text="Datos del servicio",
         style="Panel.TLabelframe",
+        padding=10,
     )
-    formulario.pack(fill="x", pady=(0, 16))
-    for columna in (1, 3, 5):
+    formulario.pack(fill="x", pady=(0, 8))
+    for columna in range(4):
         formulario.columnconfigure(columna, weight=1)
 
     ttk.Label(formulario, text="Cliente").grid(
@@ -54,18 +55,19 @@ def crear_pestana_servicios(
     cliente_combo.grid(
         row=1,
         column=0,
-        columnspan=6,
+        columnspan=4,
         sticky="ew",
-        pady=(4, 12),
+        pady=(3, 8),
     )
 
     campos = (
         ("Vehículo", vehiculo_var),
         ("Producto", producto_var),
         ("Valor", valor_var),
+        ("Fecha (DD/MM/AAAA)", fecha_var),
     )
     for indice, (etiqueta, variable) in enumerate(campos):
-        columna = indice * 2
+        columna = indice
         ttk.Label(formulario, text=etiqueta).grid(
             row=2,
             column=columna,
@@ -75,22 +77,21 @@ def crear_pestana_servicios(
         ttk.Entry(formulario, textvariable=variable).grid(
             row=3,
             column=columna,
-            columnspan=2,
             sticky="ew",
-            padx=(0, 12),
-            pady=(4, 12),
+            padx=(0, 8),
+            pady=(3, 7),
         )
 
     ttk.Label(formulario, text="Descripción del problema").grid(
         row=4,
         column=0,
-        columnspan=6,
+        columnspan=4,
         sticky="w",
-        pady=(0, 4),
+        pady=(0, 3),
     )
     descripcion_text = tk.Text(
         formulario,
-        height=4,
+        height=3,
         wrap="word",
         background="#0D1729",
         foreground="#F1F5F9",
@@ -106,27 +107,13 @@ def crear_pestana_servicios(
     descripcion_text.grid(
         row=5,
         column=0,
-        columnspan=6,
+        columnspan=4,
         sticky="ew",
-        pady=(0, 12),
-    )
-
-    ttk.Label(formulario, text="Fecha (DD/MM/AAAA)").grid(
-        row=6,
-        column=0,
-        sticky="w",
-    )
-    ttk.Entry(formulario, textvariable=fecha_var).grid(
-        row=7,
-        column=0,
-        columnspan=2,
-        sticky="ew",
-        padx=(0, 12),
-        pady=(4, 12),
+        pady=(0, 8),
     )
 
     botones = ttk.Frame(formulario)
-    botones.grid(row=8, column=0, columnspan=6, sticky="ew")
+    botones.grid(row=6, column=0, columnspan=4, sticky="ew")
     ttk.Label(botones, text="ID seleccionado:").pack(side="left")
     ttk.Label(botones, textvariable=servicio_id_var).pack(
         side="left",
@@ -307,8 +294,14 @@ def crear_pestana_servicios(
             estado_var.set("Selecciona un servicio de la tabla para modificarlo.")
             return
 
+        cliente_id = obtener_cliente_id()
+        if cliente_id is None:
+            estado_var.set("Selecciona un cliente para modificar su servicio.")
+            return
+
         try:
             modificar_servicio(
+                cliente_id,
                 int(servicio_id_var.get()),
                 vehiculo_var.get(),
                 descripcion_text.get("1.0", "end-1c"),
@@ -330,6 +323,11 @@ def crear_pestana_servicios(
             estado_var.set("Selecciona un servicio de la tabla para eliminarlo.")
             return
 
+        cliente_id = obtener_cliente_id()
+        if cliente_id is None:
+            estado_var.set("Selecciona un cliente para eliminar su servicio.")
+            return
+
         confirmar = messagebox.askyesno(
             "Confirmar eliminación",
             "¿Deseas eliminar el servicio seleccionado?",
@@ -339,7 +337,11 @@ def crear_pestana_servicios(
             return
 
         try:
-            eliminar_servicio(int(servicio_id_var.get()), ruta_db)
+            eliminar_servicio(
+                cliente_id,
+                int(servicio_id_var.get()),
+                ruta_db,
+            )
         except (TypeError, ValueError, LookupError, sqlite3.Error) as error:
             estado_var.set(f"No se pudo eliminar el servicio: {error}")
             return
@@ -385,12 +387,6 @@ def crear_pestana_servicios(
         text="Limpiar",
         command=limpiar_formulario,
     ).pack(side="right")
-    ttk.Button(
-        botones,
-        text="Actualizar clientes",
-        command=cargar_clientes,
-    ).pack(side="left", padx=(8, 0))
-
     cliente_combo.bind("<<ComboboxSelected>>", lambda _evento: recargar_historial())
     tabla.bind("<<TreeviewSelect>>", seleccionar_servicio)
     ttk.Label(

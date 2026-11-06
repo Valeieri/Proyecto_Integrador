@@ -63,14 +63,23 @@ def registrar_servicio(
     conexion = conectar_db(ruta_db)
     try:
         with conexion:
-            cursor = conexion.execute(
+            siguiente_id = conexion.execute(
+                """
+                SELECT COALESCE(MAX(id), 0) + 1
+                FROM servicios
+                WHERE cliente_id = ?
+                """,
+                (cliente_id,),
+            ).fetchone()[0]
+            conexion.execute(
                 """
                 INSERT INTO servicios (
-                    cliente_id, vehiculo, descripcion, producto, valor, fecha
+                    id, cliente_id, vehiculo, descripcion, producto, valor, fecha
                 )
-                VALUES (?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
+                    siguiente_id,
                     cliente_id,
                     vehiculo,
                     descripcion,
@@ -79,12 +88,13 @@ def registrar_servicio(
                     fecha_iso,
                 ),
             )
-            return cursor.lastrowid
+            return siguiente_id
     finally:
         conexion.close()
 
 
 def modificar_servicio(
+    cliente_id: int,
     servicio_id: int,
     vehiculo: str,
     descripcion: str,
@@ -94,6 +104,7 @@ def modificar_servicio(
     ruta_db: Path = DATABASE_PATH,
 ) -> None:
     """Actualizar los datos de un servicio sin cambiar su cliente asociado."""
+    cliente_id = validar_id_positivo(cliente_id, "cliente")
     servicio_id = validar_id_positivo(servicio_id, "servicio")
     vehiculo = validar_texto_requerido(vehiculo, "El vehiculo")
     descripcion = validar_texto_requerido(descripcion, "La descripcion del problema")
@@ -109,7 +120,7 @@ def modificar_servicio(
                 UPDATE servicios
                 SET vehiculo = ?, descripcion = ?, producto = ?,
                     valor = ?, fecha = ?
-                WHERE id = ?
+                WHERE cliente_id = ? AND id = ?
                 """,
                 (
                     vehiculo,
@@ -117,59 +128,65 @@ def modificar_servicio(
                     producto,
                     importe,
                     fecha_iso,
+                    cliente_id,
                     servicio_id,
                 ),
             )
             if cursor.rowcount == 0:
-                raise LookupError(f"No existe un servicio con ID {servicio_id}")
+                raise LookupError(
+                    f"No existe el servicio {servicio_id} para el cliente {cliente_id}"
+                )
     finally:
         conexion.close()
 
 
 def eliminar_servicio(
+    cliente_id: int,
     servicio_id: int,
     ruta_db: Path = DATABASE_PATH,
 ) -> None:
     """Eliminar un servicio existente o indicar que su ID no existe."""
+    cliente_id = validar_id_positivo(cliente_id, "cliente")
     servicio_id = validar_id_positivo(servicio_id, "servicio")
 
     conexion = conectar_db(ruta_db)
     try:
         with conexion:
             cursor = conexion.execute(
-                "DELETE FROM servicios WHERE id = ?",
-                (servicio_id,),
+                "DELETE FROM servicios WHERE cliente_id = ? AND id = ?",
+                (cliente_id, servicio_id),
             )
             if cursor.rowcount == 0:
-                raise LookupError(f"No existe un servicio con ID {servicio_id}")
+                raise LookupError(
+                    f"No existe el servicio {servicio_id} para el cliente {cliente_id}"
+                )
 
             ids_restantes = [
                 fila[0]
                 for fila in conexion.execute(
-                    "SELECT id FROM servicios ORDER BY id"
+                    """
+                    SELECT id FROM servicios
+                    WHERE cliente_id = ?
+                    ORDER BY id
+                    """,
+                    (cliente_id,),
                 )
             ]
             for posicion, id_anterior in enumerate(ids_restantes, start=1):
                 conexion.execute(
-                    "UPDATE servicios SET id = ? WHERE id = ?",
-                    (-posicion, id_anterior),
+                    """
+                    UPDATE servicios SET id = ?
+                    WHERE cliente_id = ? AND id = ?
+                    """,
+                    (-posicion, cliente_id, id_anterior),
                 )
             for id_nuevo in range(1, len(ids_restantes) + 1):
                 conexion.execute(
-                    "UPDATE servicios SET id = ? WHERE id = ?",
-                    (id_nuevo, -id_nuevo),
-                )
-
-            conexion.execute(
-                "DELETE FROM sqlite_sequence WHERE name = 'servicios'"
-            )
-            if ids_restantes:
-                conexion.execute(
                     """
-                    INSERT INTO sqlite_sequence (name, seq)
-                    VALUES ('servicios', ?)
+                    UPDATE servicios SET id = ?
+                    WHERE cliente_id = ? AND id = ?
                     """,
-                    (len(ids_restantes),),
+                    (id_nuevo, cliente_id, -id_nuevo),
                 )
     finally:
         conexion.close()

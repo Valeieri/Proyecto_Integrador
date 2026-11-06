@@ -24,8 +24,8 @@ la verificación manual y la entrega personal/publicación.
 
   La entrada usa `DD/MM/AAAA`, la base guarda la fecha en formato ISO
   `AAAA-MM-DD` y el importe debe ser numérico y no negativo (cero está permitido).
-- [x] Definir las validaciones de correo y teléfono celular: el correo es
-  obligatorio sin formato estricto; el celular debe tener exactamente 10 dígitos.
+- [x] Definir las validaciones de correo y teléfono celular: el correo debe
+  tener formato habitual; el celular debe tener exactamente 10 dígitos.
 - [x] Diseñar una estructura sencilla que separe la lógica del programa, la base de datos y la interfaz.
 
   Los paquetes usan nombres en minúsculas (`clientes`, `servicios`, `interfaz`,
@@ -49,7 +49,7 @@ la verificación manual y la entrega personal/publicación.
 - [x] Compactar los IDs de clientes al borrar uno y actualizar sus referencias
   en servicios sin perder historial.
 - [x] Validar campos obligatorios de servicio, fecha real/formato e importe no negativo.
-- [x] Mantener el correo como campo requerido sin formato estricto.
+- [x] Validar el formato del correo al registrar y modificar clientes.
 - [x] Mostrar errores esperados de validación, IDs inexistentes y SQLite en la interfaz.
 - [ ] Aplicar y poder explicar variables y tipos, operadores, condicionales, ciclos, estructuras de datos y funciones en partes reales del proyecto.
 
@@ -74,6 +74,10 @@ la verificación manual y la entrega personal/publicación.
   completa con **Mostrar todos**.
 - [x] Sincronizar la lista de clientes de servicios al abrir esa pestaña para
   retirar opciones eliminadas y mostrar altas recientes.
+- [x] Eliminar el botón redundante **Actualizar clientes**: la pestaña se
+  actualiza al entrar.
+- [x] Ajustar el tamaño y espaciado para que el formulario y la tabla de
+  servicios se vean en una ventana normal centrada.
 - [x] Añadir eliminación de clientes con confirmación en la interfaz.
 - [x] Crear formularios y botones para las funciones de servicios.
 - [x] Mostrar los resultados de búsqueda de clientes en una tabla.
@@ -84,6 +88,8 @@ la verificación manual y la entrega personal/publicación.
   SQLite, conservando una migración para la base existente.
 - [x] Compactar los IDs de servicios después de eliminar uno y continuar la
   numeración con el siguiente ID disponible.
+- [x] Asignar IDs de servicios por cliente, reiniciando en 1 para cada cliente,
+  y usar cliente+servicio para editar o eliminar sin ambigüedad.
 - [x] Aplicar un tema oscuro inicial.
 - [x] Modernizar la presentación con paneles diferenciados, acentos de color,
   tablas con filas alternadas y una jerarquía visual más clara.
@@ -103,6 +109,8 @@ la verificación manual y la entrega personal/publicación.
 - [x] Probar modificación de cliente y el error para un ID inexistente.
 - [x] Probar teléfonos de exactamente 10 dígitos, cortos, largos y con
   caracteres no numéricos.
+- [x] Probar correos válidos con alias/subdominios y rechazar formatos
+  malformados tanto al registrar como al editar.
 - [x] Verificar que al compactar IDs de clientes los servicios continúan
   vinculados al mismo cliente.
 - [x] Probar registro e historial ordenado, formato de fecha, importe e integridad
@@ -118,7 +126,7 @@ la verificación manual y la entrega personal/publicación.
 - [x] Comprobar persistencia, búsqueda, historial, modificación y eliminación
   de clientes con pruebas automatizadas.
 - [x] Corregir la validación de importes en servicios y ejecutar la suite
-  completa: las 27 pruebas pasan.
+  completa: las 31 pruebas pasan.
 
 ## 6. Documentar y preparar la entrega
 
@@ -130,7 +138,9 @@ la verificación manual y la entrega personal/publicación.
   compartidas en `validaciones/validaciones.py`.
 - [x] Actualizar las instrucciones de uso y la estructura de carpetas del README.
 - [x] Verificar el flujo `python main.py` y la construcción de la ventana
-  después de reorganizar módulos; las 15 pruebas automatizadas también pasan.
+  después de reorganizar módulos; en esa verificación inicial pasaron 15
+  pruebas automatizadas. La suite completa actual tiene 31 pruebas aprobadas
+  (ver sección 5).
 - [x] Documentar las dependencias estándar y cómo reproducir las pruebas.
 - [x] Declarar en el README el uso de IA y la verificación realizada.
 - [ ] Preparar el PDF de entrega con los datos requeridos y respuestas propias a

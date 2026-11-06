@@ -22,8 +22,14 @@ def crear_ventana_principal() -> tk.Tk:
     """Crear la ventana principal con pestañas para clientes y servicios."""
     ventana = tk.Tk()
     ventana.title("Gestión automotriz")
-    ventana.geometry("1120x740")
-    ventana.minsize(900, 600)
+    ancho_pantalla = ventana.winfo_screenwidth()
+    alto_pantalla = ventana.winfo_screenheight()
+    ancho = min(1120, max(900, ancho_pantalla - 80))
+    alto = min(680, max(650, alto_pantalla - 100))
+    posicion_x = max(0, (ancho_pantalla - ancho) // 2)
+    posicion_y = max(0, (alto_pantalla - alto) // 2)
+    ventana.geometry(f"{ancho}x{alto}+{posicion_x}+{posicion_y}")
+    ventana.minsize(900, 650)
     ventana.configure(background=BACKGROUND)
 
     estilo = ttk.Style(ventana)
@@ -223,7 +229,7 @@ def crear_ventana_principal() -> tk.Tk:
     )
 
     encabezado = ttk.Frame(ventana, style="Header.TFrame", padding=(24, 18))
-    encabezado.pack(fill="x", padx=24, pady=(24, 18))
+    encabezado.pack(fill="x", padx=20, pady=(16, 10))
     titulo = ttk.Frame(encabezado, style="Header.TFrame")
     titulo.pack(side="left", fill="x", expand=True)
     ttk.Label(
@@ -248,10 +254,10 @@ def crear_ventana_principal() -> tk.Tk:
     ).pack(side="right", anchor="n", padx=(16, 0))
 
     pestañas = ttk.Notebook(ventana)
-    pestañas.pack(fill="both", expand=True, padx=24, pady=(0, 24))
+    pestañas.pack(fill="both", expand=True, padx=20, pady=(0, 16))
 
-    clientes = ttk.Frame(pestañas, padding=20)
-    servicios = ttk.Frame(pestañas, padding=20)
+    clientes = ttk.Frame(pestañas, padding=14)
+    servicios = ttk.Frame(pestañas, padding=14)
     pestañas.add(clientes, text="Clientes")
     pestañas.add(servicios, text="Servicios")
 

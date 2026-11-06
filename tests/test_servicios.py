@@ -56,6 +56,46 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual("2026-11-05", history[1]["fecha"])
         self.assertEqual(0.0, history[1]["valor"])
 
+    def test_service_ids_are_separate_for_each_customer(self):
+        second_client_id = registrar_cliente(
+            "Bea Diaz",
+            "bea@example.com",
+            "0000551235",
+            self.database_path,
+        )
+
+        first_client_first_service = registrar_servicio(
+            self.client_id,
+            "Auto",
+            "Servicio de Ana",
+            "Aceite",
+            10,
+            "05/11/2026",
+            self.database_path,
+        )
+        second_client_first_service = registrar_servicio(
+            second_client_id,
+            "Sedan",
+            "Servicio de Bea",
+            "Filtro",
+            20,
+            "06/11/2026",
+            self.database_path,
+        )
+        first_client_second_service = registrar_servicio(
+            self.client_id,
+            "Auto",
+            "Segundo servicio de Ana",
+            "Filtro",
+            30,
+            "07/11/2026",
+            self.database_path,
+        )
+
+        self.assertEqual(1, first_client_first_service)
+        self.assertEqual(1, second_client_first_service)
+        self.assertEqual(2, first_client_second_service)
+
     def test_rejects_invalid_service_data(self):
         with self.assertRaises(ValueError):
             registrar_servicio(
@@ -116,6 +156,7 @@ class ServiceTests(unittest.TestCase):
         )
 
         modificar_servicio(
+            self.client_id,
             service_id,
             "SUV",
             "Cambio de pieza",
@@ -143,14 +184,15 @@ class ServiceTests(unittest.TestCase):
             self.database_path,
         )
 
-        eliminar_servicio(service_id, self.database_path)
+        eliminar_servicio(self.client_id, service_id, self.database_path)
 
         history = consultar_historial_cliente(self.client_id, self.database_path)
         self.assertEqual([], history)
         with self.assertRaises(LookupError):
-            eliminar_servicio(999, self.database_path)
+            eliminar_servicio(self.client_id, 999, self.database_path)
         with self.assertRaises(LookupError):
             modificar_servicio(
+                self.client_id,
                 999,
                 "Auto",
                 "Mantenimiento",
@@ -161,6 +203,21 @@ class ServiceTests(unittest.TestCase):
             )
 
     def test_compacts_service_ids_after_deleting_an_earlier_service(self):
+        second_client_id = registrar_cliente(
+            "Bea Diaz",
+            "bea@example.com",
+            "0000551235",
+            self.database_path,
+        )
+        second_client_service_id = registrar_servicio(
+            second_client_id,
+            "Sedan",
+            "Servicio de Bea",
+            "Aceite",
+            15,
+            "06/11/2026",
+            self.database_path,
+        )
         service_ids = [
             registrar_servicio(
                 self.client_id,
@@ -178,7 +235,7 @@ class ServiceTests(unittest.TestCase):
             )
         ]
 
-        eliminar_servicio(service_ids[0], self.database_path)
+        eliminar_servicio(self.client_id, service_ids[0], self.database_path)
 
         historial = consultar_historial_cliente(
             self.client_id,
@@ -191,6 +248,14 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(
             {1: "Segundo servicio", 2: "Tercer servicio"},
             servicios_por_id,
+        )
+        historial_segundo_cliente = consultar_historial_cliente(
+            second_client_id,
+            self.database_path,
+        )
+        self.assertEqual(
+            second_client_service_id,
+            historial_segundo_cliente[0]["id"],
         )
 
         siguiente_id = registrar_servicio(

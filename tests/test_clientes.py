@@ -36,6 +36,38 @@ class ClientTests(unittest.TestCase):
         self.assertEqual("ana@example.com", clients[0]["correo"])
         self.assertEqual("0000551234", clients[0]["telefono"])
 
+    def test_accepts_common_email_with_plus_alias_and_subdomain(self):
+        registrar_cliente(
+            "Ana Garcia",
+            " ana.garcia+auto@mail.example.co.uk ",
+            "0000551234",
+            self.database_path,
+        )
+
+        clients = buscar_clientes("Ana Garcia", self.database_path)
+        self.assertEqual(
+            "ana.garcia+auto@mail.example.co.uk",
+            clients[0]["correo"],
+        )
+
+    def test_rejects_invalid_email_formats_when_registering(self):
+        for email in (
+            "sin-arroba",
+            "ana@",
+            "@example.com",
+            "ana..garcia@example.com",
+            "ana@localhost",
+            "ana @example.com",
+        ):
+            with self.subTest(email=email):
+                with self.assertRaisesRegex(ValueError, "formato válido"):
+                    registrar_cliente(
+                        "Ana Garcia",
+                        email,
+                        "0000551234",
+                        self.database_path,
+                    )
+
     def test_searches_by_partial_name_or_phone(self):
         registrar_cliente("Ana Garcia", "ana@example.com", "0000551234", self.database_path)
 
@@ -141,6 +173,26 @@ class ClientTests(unittest.TestCase):
                 "12345678901",
                 self.database_path,
             )
+
+    def test_rejects_invalid_email_when_modifying_client(self):
+        client_id = registrar_cliente(
+            "Ana Garcia",
+            "ana@example.com",
+            "0000551234",
+            self.database_path,
+        )
+
+        with self.assertRaisesRegex(ValueError, "formato válido"):
+            modificar_cliente(
+                client_id,
+                "Ana Garcia",
+                "correo-invalido",
+                "0000551234",
+                self.database_path,
+            )
+
+        clients = listar_clientes(self.database_path)
+        self.assertEqual("ana@example.com", clients[0]["correo"])
 
     def test_modifying_unknown_client_raises_lookup_error(self):
         with self.assertRaises(LookupError):

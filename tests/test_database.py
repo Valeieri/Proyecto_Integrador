@@ -33,10 +33,25 @@ class DatabaseInitializationTests(unittest.TestCase):
                 fila[1]
                 for fila in conexion.execute("PRAGMA table_info(servicios)")
             }
+            clave_primaria_servicios = tuple(
+                fila[1]
+                for fila in sorted(
+                    (
+                        fila
+                        for fila in conexion.execute("PRAGMA table_info(servicios)")
+                        if fila[5]
+                    ),
+                    key=lambda fila: fila[5],
+                )
+            )
 
         self.assertIn("clientes", tablas)
         self.assertIn("servicios", tablas)
         self.assertNotIn("marca", columnas_servicios)
+        self.assertEqual(
+            ("cliente_id", "id"),
+            clave_primaria_servicios,
+        )
 
     def test_service_requires_an_existing_customer(self):
         inicializar_base_datos(self.database_path)
@@ -46,11 +61,11 @@ class DatabaseInitializationTests(unittest.TestCase):
                 conexion.execute(
                     """
                     INSERT INTO servicios (
-                        cliente_id, vehiculo, descripcion, producto, valor, fecha
+                        id, cliente_id, vehiculo, descripcion, producto, valor, fecha
                     )
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (999, "Auto", "Mantenimiento", "Aceite", 25.0, "2026-11-06"),
+                    (1, 999, "Auto", "Mantenimiento", "Aceite", 25.0, "2026-11-06"),
                 )
 
     def test_initialization_preserves_data_for_the_next_application_start(self):
@@ -92,9 +107,20 @@ class DatabaseInitializationTests(unittest.TestCase):
                 INSERT INTO clientes VALUES (
                     1, 'Ana Garcia', 'ana@example.com', '0000551234'
                 );
+                INSERT INTO clientes VALUES (
+                    2, 'Bea Diaz', 'bea@example.com', '0000551235'
+                );
                 INSERT INTO servicios VALUES (
                     7, 1, 'Auto', 'Ruido al frenar', 'Pastillas',
                     'Marca anterior', 75.0, '2026-11-06'
+                );
+                INSERT INTO servicios VALUES (
+                    8, 2, 'Sedan', 'Mantenimiento', 'Aceite',
+                    'Otra marca', 40.0, '2026-11-05'
+                );
+                INSERT INTO servicios VALUES (
+                    9, 2, 'Sedan', 'Cambio de filtro', 'Filtro',
+                    'Otra marca', 15.0, '2026-11-04'
                 );
                 """
             )
@@ -106,20 +132,25 @@ class DatabaseInitializationTests(unittest.TestCase):
                 fila[1]
                 for fila in conexion.execute("PRAGMA table_info(servicios)")
             }
-            servicio = conexion.execute(
+            servicios = conexion.execute(
                 """
                 SELECT id, cliente_id, vehiculo, descripcion, producto, valor, fecha
                 FROM servicios
+                ORDER BY cliente_id, id
                 """
-            ).fetchone()
+            ).fetchall()
             errores_claves_foraneas = conexion.execute(
                 "PRAGMA foreign_key_check"
             ).fetchall()
 
         self.assertNotIn("marca", columnas)
         self.assertEqual(
-            (7, 1, "Auto", "Ruido al frenar", "Pastillas", 75.0, "2026-11-06"),
-            servicio,
+            [
+                (1, 1, "Auto", "Ruido al frenar", "Pastillas", 75.0, "2026-11-06"),
+                (1, 2, "Sedan", "Mantenimiento", "Aceite", 40.0, "2026-11-05"),
+                (2, 2, "Sedan", "Cambio de filtro", "Filtro", 15.0, "2026-11-04"),
+            ],
+            servicios,
         )
         self.assertEqual([], errores_claves_foraneas)
 

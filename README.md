@@ -1,7 +1,6 @@
 # Sistema de gestión automotriz
 
-Aplicación de escritorio para administrar clientes y los servicios asociados a
-sus vehículos. Está construida con Python, Tkinter y SQLite.
+Aplicación de escritorio para administrar clientes y los servicios asociados a sus vehículos. Está construida con Python, Tkinter y SQLite.
 
 ## Alcance y criterios de aceptación
 
@@ -10,42 +9,29 @@ sus vehículos. Está construida con Python, Tkinter y SQLite.
 - Registrar clientes con nombre, correo y teléfono obligatorios.
 - Buscar por coincidencias parciales en el nombre o el teléfono.
 - Seleccionar un resultado, cargar sus datos en el formulario y modificarlo.
-- Mostrar la lista completa al abrir la pestaña y volver a ella con **Mostrar
-  todos**.
-- Eliminar un cliente sin servicios asociados después de confirmar. Si tiene
-  servicios, se bloquea el borrado para conservar el historial. Al borrar un
-  cliente, los IDs restantes se compactan y sus servicios siguen vinculados.
-  El siguiente cliente recibe el ID consecutivo.
+- Mostrar la lista completa al abrir la pestaña y volver a ella con **Mostrar todos**.
+- Eliminar un cliente sin servicios asociados después de confirmar. Si tiene servicios, se bloquea el borrado para conservar el historial. Al borrar un cliente, los IDs restantes se compactan y sus servicios siguen vinculados. El siguiente cliente recibe el ID consecutivo.
 - Rechazar campos vacíos o que no sean texto y mostrar errores comprensibles.
 - El teléfono celular debe contener exactamente 10 dígitos; se conserva como
   texto para no perder ceros iniciales.
-- No se exige un formato específico para el correo.
+- El correo debe tener un formato habitual como `nombre@dominio.com`; se
+  admiten subdominios y alias con `+`.
 
 ### Servicios e historial
 
-- Registrar un servicio asociado a un cliente existente con vehículo,
-  descripción del problema, producto, valor y fecha.
-- Rechazar texto obligatorio vacío. El valor debe ser numérico, finito y mayor
-  o igual a cero; se permiten servicios gratuitos.
-- Ingresar la fecha como `DD/MM/AAAA`; se valida como fecha real y se almacena
-  como `AAAA-MM-DD`.
-- Consultar los servicios del cliente seleccionado del más reciente al más
-  antiguo.
-- Seleccionar un servicio para cargarlo en el formulario y modificarlo sin
-  cambiar el cliente asociado.
-- Solicitar confirmación antes de eliminar un servicio. Los IDs inexistentes
-  producen errores explícitos. Después de borrar un servicio, los IDs
-  restantes se compactan para que no queden saltos.
+- Registrar un servicio asociado a un cliente existente con vehículo, descripción del problema, producto, valor y fecha.
+- Rechazar texto obligatorio vacío. El valor debe ser numérico, finito y mayor o igual a cero; se permiten servicios gratuitos.
+- Ingresar la fecha como `DD/MM/AAAA`; se valida como fecha real y se almacena como `AAAA-MM-DD`.
+- Consultar los servicios del cliente seleccionado del más reciente al más antiguo.
+- Seleccionar un servicio para cargarlo en el formulario y modificarlo sin cambiar el cliente asociado.
+- Solicitar confirmación antes de eliminar un servicio. Los IDs inexistentes producen errores explícitos. Después de borrar un servicio, los IDs restantes se compactan para ese cliente. Cada cliente tiene su propia numeración de servicios, que comienza en `1`.
 
 ### Persistencia e interfaz
 
-- Crear las tablas SQLite al iniciar si todavía no existen, sin eliminar los
-  registros ya guardados.
+- Crear las tablas SQLite al iniciar si todavía no existen, sin eliminar los registros ya guardados.
 - Mantener los datos localmente en `datos/automotriz.db`.
-- Migrar la tabla existente de servicios para retirar el campo marca sin perder
-  los datos históricos.
-- Separar clientes y servicios en pestañas Tkinter, mostrar registros e
-  historiales en tablas y usar una presentación oscura.
+- Migrar la tabla existente de servicios para retirar el campo marca y asignar IDs por cliente sin perder los datos históricos.
+- Separar clientes y servicios en pestañas Tkinter, mostrar registros e historiales en tablas y usar una presentación oscura.
 - Mostrar en la interfaz los errores de validación y almacenamiento.
 
 ## Requisitos
@@ -65,6 +51,8 @@ python main.py
 ```
 
 La aplicación crea la base y sus tablas si es el primer inicio.
+La ventana se centra y adapta su tamaño a la pantalla para abrir en modo normal,
+sin requerir maximizarla.
 
 1. En **Clientes** aparece la lista completa al abrir la pestaña. Completa
    nombre, correo y teléfono (exactamente 10 dígitos) y pulsa **Guardar cliente**.
@@ -76,9 +64,8 @@ La aplicación crea la base y sus tablas si es el primer inicio.
    permite borrar clientes que tengan servicios asociados. **Limpiar** vacía
    el formulario.
 3. En **Servicios**, selecciona un cliente en la lista. Su historial aparece
-   en la tabla. Si acabas de registrar un cliente y no aparece, pulsa
-   **Actualizar clientes**. La lista se sincroniza también al abrir esta
-   pestaña, así que los clientes eliminados ya no quedan como opciones.
+   en la tabla. La lista se sincroniza al abrir esta pestaña, así que los
+   clientes eliminados ya no quedan como opciones.
 4. Completa los datos del servicio y pulsa **Guardar servicio**. La descripción
    del problema admite varias líneas. Ingresa el valor como número (usa punto
    para los decimales) y la fecha como `DD/MM/AAAA`.
@@ -93,7 +80,7 @@ La aplicación crea la base y sus tablas si es el primer inicio.
   espacios.
 - El nombre, correo y teléfono se guardan como texto. El teléfono celular debe
   contener exactamente 10 dígitos.
-- No se impone un formato específico para el correo.
+- El correo se valida al registrar y modificar clientes antes de guardar.
 - El valor no puede ser negativo ni infinito; cero está permitido.
 - La fecha debe existir en el calendario y se muestra en formato `DD/MM/AAAA`.
 - Cada servicio debe referenciar a un cliente existente.
@@ -129,9 +116,7 @@ tests/          Pruebas automatizadas con unittest
 ## Uso de inteligencia artificial
 
 Se utilizó GitHub Copilot como apoyo para explicar conceptos, revisar la
-estructura y desarrollar partes del código y de las pruebas. El proyecto debe
-ser revisado y comprendido por la estudiante, quien explicará las decisiones y
-los resultados con sus propias palabras en la entrega.
+estructura y desarrollar partes del código y de las pruebas. 
 
 ## Referencia del curso
 
