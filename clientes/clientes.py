@@ -76,6 +76,7 @@ def eliminar_cliente(
     cliente_id = validar_id_positivo(cliente_id, "cliente")
     conexion = conectar_db(ruta_db)
     try:
+        conexion.execute("PRAGMA foreign_keys = OFF")
         with conexion:
             cliente = conexion.execute(
                 "SELECT id FROM clientes WHERE id = ?",
@@ -99,12 +100,51 @@ def eliminar_cliente(
                 "DELETE FROM clientes WHERE id = ?",
                 (cliente_id,),
             )
-            clientes_restantes = conexion.execute(
-                "SELECT COUNT(*) FROM clientes"
-            ).fetchone()[0]
-            if clientes_restantes == 0:
+            ids_restantes = [
+                fila[0]
+                for fila in conexion.execute(
+                    "SELECT id FROM clientes ORDER BY id"
+                )
+            ]
+            for posicion, id_anterior in enumerate(ids_restantes, start=1):
                 conexion.execute(
-                    "DELETE FROM sqlite_sequence WHERE name = 'clientes'"
+                    "UPDATE servicios SET cliente_id = ? WHERE cliente_id = ?",
+                    (-posicion, id_anterior),
+                )
+                conexion.execute(
+                    "UPDATE clientes SET id = ? WHERE id = ?",
+                    (-posicion, id_anterior),
+                )
+
+            for id_nuevo in range(1, len(ids_restantes) + 1):
+                conexion.execute(
+                    "UPDATE clientes SET id = ? WHERE id = ?",
+                    (id_nuevo, -id_nuevo),
+                )
+                conexion.execute(
+                    "UPDATE servicios SET cliente_id = ? WHERE cliente_id = ?",
+                    (id_nuevo, -id_nuevo),
+                )
+
+            conexion.execute(
+                "DELETE FROM sqlite_sequence WHERE name = 'clientes'"
+            )
+            if ids_restantes:
+                conexion.execute(
+                    """
+                    INSERT INTO sqlite_sequence (name, seq)
+                    VALUES ('clientes', ?)
+                    """,
+                    (len(ids_restantes),),
+                )
+
+            errores_claves_foraneas = conexion.execute(
+                "PRAGMA foreign_key_check"
+            ).fetchall()
+            if errores_claves_foraneas:
+                raise sqlite3.IntegrityError(
+                    "La compactación de IDs dejó referencias de servicios inválidas"
                 )
     finally:
+        conexion.execute("PRAGMA foreign_keys = ON")
         conexion.close()

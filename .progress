@@ -46,7 +46,8 @@ la verificación manual y la entrega personal/publicación.
   tanto al registrar como al modificar clientes.
 - [x] Crear la operación para eliminar clientes sin servicios asociados.
 - [x] Impedir la eliminación de clientes con servicios para conservar el historial.
-- [x] Reiniciar el contador de IDs de clientes cuando se elimina el último.
+- [x] Compactar los IDs de clientes al borrar uno y actualizar sus referencias
+  en servicios sin perder historial.
 - [x] Validar campos obligatorios de servicio, fecha real/formato e importe no negativo.
 - [x] Mantener el correo como campo requerido sin formato estricto.
 - [x] Mostrar errores esperados de validación, IDs inexistentes y SQLite en la interfaz.
@@ -81,6 +82,8 @@ la verificación manual y la entrega personal/publicación.
   **Descripción del problema**.
 - [x] Retirar el campo marca del formulario, las operaciones y el esquema
   SQLite, conservando una migración para la base existente.
+- [x] Compactar los IDs de servicios después de eliminar uno y continuar la
+  numeración con el siguiente ID disponible.
 - [x] Aplicar un tema oscuro inicial.
 - [x] Modernizar la presentación con paneles diferenciados, acentos de color,
   tablas con filas alternadas y una jerarquía visual más clara.
@@ -100,10 +103,14 @@ la verificación manual y la entrega personal/publicación.
 - [x] Probar modificación de cliente y el error para un ID inexistente.
 - [x] Probar teléfonos de exactamente 10 dígitos, cortos, largos y con
   caracteres no numéricos.
+- [x] Verificar que al compactar IDs de clientes los servicios continúan
+  vinculados al mismo cliente.
 - [x] Probar registro e historial ordenado, formato de fecha, importe e integridad
   de cliente en servicios.
 - [x] Probar modificación, eliminación y errores para IDs de servicio
   inexistentes.
+- [x] Comprobar que al borrar un servicio los IDs posteriores se compactan,
+  que cada registro conserva sus datos y que el siguiente ID continúa la serie.
 - [x] Verificar la migración de la base anterior: mantiene el historial y los
   IDs, elimina la columna marca y conserva la integridad de claves foráneas.
 - [x] Probar los recorridos principales de datos para clientes y servicios.
@@ -111,7 +118,7 @@ la verificación manual y la entrega personal/publicación.
 - [x] Comprobar persistencia, búsqueda, historial, modificación y eliminación
   de clientes con pruebas automatizadas.
 - [x] Corregir la validación de importes en servicios y ejecutar la suite
-  completa: las 25 pruebas pasan.
+  completa: las 27 pruebas pasan.
 
 ## 6. Documentar y preparar la entrega
 

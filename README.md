@@ -13,8 +13,9 @@ sus vehículos. Está construida con Python, Tkinter y SQLite.
 - Mostrar la lista completa al abrir la pestaña y volver a ella con **Mostrar
   todos**.
 - Eliminar un cliente sin servicios asociados después de confirmar. Si tiene
-  servicios, se bloquea el borrado para conservar el historial. Al eliminar
-  todos los clientes, el siguiente registro vuelve a recibir el ID 1.
+  servicios, se bloquea el borrado para conservar el historial. Al borrar un
+  cliente, los IDs restantes se compactan y sus servicios siguen vinculados.
+  El siguiente cliente recibe el ID consecutivo.
 - Rechazar campos vacíos o que no sean texto y mostrar errores comprensibles.
 - El teléfono celular debe contener exactamente 10 dígitos; se conserva como
   texto para no perder ceros iniciales.
@@ -33,7 +34,8 @@ sus vehículos. Está construida con Python, Tkinter y SQLite.
 - Seleccionar un servicio para cargarlo en el formulario y modificarlo sin
   cambiar el cliente asociado.
 - Solicitar confirmación antes de eliminar un servicio. Los IDs inexistentes
-  producen errores explícitos.
+  producen errores explícitos. Después de borrar un servicio, los IDs
+  restantes se compactan para que no queden saltos.
 
 ### Persistencia e interfaz
 

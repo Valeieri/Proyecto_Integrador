@@ -9,6 +9,7 @@ from clientes.clientes import (
 )
 from clientes.consultas import buscar_clientes, listar_clientes
 from datos.database import inicializar_base_datos
+from servicios.historial import consultar_historial_cliente
 from servicios.servicios import registrar_servicio
 
 
@@ -164,19 +165,17 @@ class ClientTests(unittest.TestCase):
         self.assertEqual([], listar_clientes(self.database_path))
 
     def test_customer_ids_restart_at_one_after_all_customers_are_deleted(self):
-        client_ids = [
+        for indice in range(1, 4):
             registrar_cliente(
                 f"Cliente {indice}",
                 f"cliente{indice}@example.com",
                 f"000000000{indice}",
                 self.database_path,
             )
-            for indice in range(1, 4)
-        ]
-        self.assertEqual([1, 2, 3], client_ids)
 
-        for client_id in client_ids:
-            eliminar_cliente(client_id, self.database_path)
+        for _ in range(3):
+            cliente = listar_clientes(self.database_path)[0]
+            eliminar_cliente(cliente["id"], self.database_path)
 
         new_client_id = registrar_cliente(
             "Nuevo cliente",
@@ -186,6 +185,47 @@ class ClientTests(unittest.TestCase):
         )
 
         self.assertEqual(1, new_client_id)
+
+    def test_compacts_customer_ids_and_preserves_service_links(self):
+        first_client_id = registrar_cliente(
+            "Ana Garcia",
+            "ana@example.com",
+            "0000000001",
+            self.database_path,
+        )
+        second_client_id = registrar_cliente(
+            "Bea Diaz",
+            "bea@example.com",
+            "0000000002",
+            self.database_path,
+        )
+        service_id = registrar_servicio(
+            second_client_id,
+            "Auto",
+            "Ruido al frenar",
+            "Pastillas",
+            75,
+            "06/11/2026",
+            self.database_path,
+        )
+
+        eliminar_cliente(first_client_id, self.database_path)
+
+        clientes = listar_clientes(self.database_path)
+        historial = consultar_historial_cliente(1, self.database_path)
+        self.assertEqual([1], [cliente["id"] for cliente in clientes])
+        self.assertEqual("Bea Diaz", clientes[0]["nombre"])
+        self.assertEqual(1, len(historial))
+        self.assertEqual(service_id, historial[0]["id"])
+        self.assertEqual("Ruido al frenar", historial[0]["descripcion"])
+
+        next_client_id = registrar_cliente(
+            "Carla Soto",
+            "carla@example.com",
+            "0000000003",
+            self.database_path,
+        )
+        self.assertEqual(2, next_client_id)
 
     def test_does_not_delete_client_with_service_history(self):
         client_id = registrar_cliente(

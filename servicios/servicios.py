@@ -142,5 +142,34 @@ def eliminar_servicio(
             )
             if cursor.rowcount == 0:
                 raise LookupError(f"No existe un servicio con ID {servicio_id}")
+
+            ids_restantes = [
+                fila[0]
+                for fila in conexion.execute(
+                    "SELECT id FROM servicios ORDER BY id"
+                )
+            ]
+            for posicion, id_anterior in enumerate(ids_restantes, start=1):
+                conexion.execute(
+                    "UPDATE servicios SET id = ? WHERE id = ?",
+                    (-posicion, id_anterior),
+                )
+            for id_nuevo in range(1, len(ids_restantes) + 1):
+                conexion.execute(
+                    "UPDATE servicios SET id = ? WHERE id = ?",
+                    (id_nuevo, -id_nuevo),
+                )
+
+            conexion.execute(
+                "DELETE FROM sqlite_sequence WHERE name = 'servicios'"
+            )
+            if ids_restantes:
+                conexion.execute(
+                    """
+                    INSERT INTO sqlite_sequence (name, seq)
+                    VALUES ('servicios', ?)
+                    """,
+                    (len(ids_restantes),),
+                )
     finally:
         conexion.close()

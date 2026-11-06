@@ -160,6 +160,50 @@ class ServiceTests(unittest.TestCase):
                 self.database_path,
             )
 
+    def test_compacts_service_ids_after_deleting_an_earlier_service(self):
+        service_ids = [
+            registrar_servicio(
+                self.client_id,
+                "Auto",
+                descripcion,
+                "Aceite",
+                valor,
+                "06/11/2026",
+                self.database_path,
+            )
+            for descripcion, valor in (
+                ("Primer servicio", 10),
+                ("Segundo servicio", 20),
+                ("Tercer servicio", 30),
+            )
+        ]
+
+        eliminar_servicio(service_ids[0], self.database_path)
+
+        historial = consultar_historial_cliente(
+            self.client_id,
+            self.database_path,
+        )
+        servicios_por_id = {
+            servicio["id"]: servicio["descripcion"]
+            for servicio in historial
+        }
+        self.assertEqual(
+            {1: "Segundo servicio", 2: "Tercer servicio"},
+            servicios_por_id,
+        )
+
+        siguiente_id = registrar_servicio(
+            self.client_id,
+            "Auto",
+            "Cuarto servicio",
+            "Aceite",
+            40,
+            "07/11/2026",
+            self.database_path,
+        )
+        self.assertEqual(3, siguiente_id)
+
 
 if __name__ == "__main__":
     unittest.main()
