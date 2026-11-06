@@ -1,0 +1,134 @@
+# Progreso del proyecto integrador
+
+Este checklist guía la construcción del proyecto descrito en `agents.md`.
+Los requisitos del programa salen de ese archivo; el Ebook oficial se usa como
+referencia para aprender y explicar los conceptos de Python aplicados. El plan
+no está organizado por días o sesiones del curso.
+
+Una casilla se marca cuando hay evidencia verificable, no solo porque se haya
+escrito código. Ya están implementados el esquema SQLite, las operaciones de
+clientes/servicios y sus formularios principales; falta la revisión visual,
+la verificación manual y la entrega personal/publicación.
+
+## 1. Entender y diseñar
+
+- [x] Revisar los requisitos del sistema de gestión automotriz en `agents.md`.
+- [x] Revisar el Ebook como referencia de conceptos y metodología.
+- [x] Convertir cada funcionalidad en criterios de aceptación claros y
+  organizarlos en el README.
+- [x] Definir cómo se relacionan clientes y servicios, y qué datos guarda cada uno.
+
+  Un cliente puede tener varios servicios; cada servicio referencia a un cliente
+  mediante `cliente_id`.
+- [x] Acordar las reglas iniciales de fecha e importe del servicio.
+
+  La entrada usa `DD/MM/AAAA`, la base guarda la fecha en formato ISO
+  `AAAA-MM-DD` y el importe debe ser numérico y no negativo (cero está permitido).
+- [x] Definir las validaciones de correo y teléfono celular: el correo es
+  obligatorio sin formato estricto; el teléfono acepta solo dígitos, hasta 10.
+- [x] Diseñar una estructura sencilla que separe la lógica del programa, la base de datos y la interfaz.
+
+  Los paquetes usan nombres en minúsculas (`clientes`, `servicios`, `interfaz`,
+  `datos`, `validaciones`). `datos/database.py` prepara el esquema SQLite;
+  `validaciones/validaciones.py` contiene validaciones compartidas; clientes
+  y servicios contienen sus operaciones.
+
+## 2. Implementar la lógica del programa
+
+- [x] Crear la función para registrar clientes.
+- [x] Crear la búsqueda de clientes por coincidencia parcial en nombre o teléfono.
+- [x] Crear la función para modificar clientes por ID.
+- [x] Crear la función para registrar servicios.
+- [x] Permitir consultar el historial de servicios de un cliente.
+- [x] Crear funciones para modificar y eliminar servicios.
+- [x] Rechazar datos obligatorios vacíos o que no sean texto al registrar clientes.
+- [x] Validar que el teléfono celular contenga solo dígitos y no supere los 10,
+  tanto al registrar como al modificar clientes.
+- [x] Validar campos obligatorios de servicio, fecha real/formato e importe no negativo.
+- [x] Mantener el correo como campo requerido sin formato estricto.
+- [x] Mostrar errores esperados de validación, IDs inexistentes y SQLite en la interfaz.
+- [ ] Aplicar y poder explicar variables y tipos, operadores, condicionales, ciclos, estructuras de datos y funciones en partes reales del proyecto.
+
+## 3. Guardar los datos
+
+- [x] Crear las tablas SQLite para clientes y servicios y definir su relación.
+- [x] Verificar la creación de tablas y el rechazo de servicios con un cliente
+  inexistente, usando una base de datos temporal.
+- [x] Guardar y buscar clientes usando parámetros SQL.
+- [x] Actualizar clientes usando parámetros SQL e informar si el ID no existe.
+- [x] Guardar servicios y consultar el historial usando parámetros SQL.
+- [x] Actualizar y eliminar servicios usando sus IDs.
+- [x] Comprobar que los datos existentes se conservan al reinicializar la base
+  para el siguiente inicio.
+- [x] Probar errores previsibles de escritura y mostrarlos en la interfaz.
+
+## 4. Construir la interfaz gráfica
+
+- [x] Crear la ventana principal con pestañas de clientes y servicios.
+- [x] Crear el formulario, búsqueda y tabla de resultados de clientes.
+- [x] Crear formularios y botones para las funciones de servicios.
+- [x] Mostrar los resultados de búsqueda de clientes en una tabla.
+- [x] Mostrar servicios e historiales en tablas.
+- [x] Aplicar un tema oscuro inicial.
+- [x] Modernizar la presentación con paneles diferenciados, acentos de color,
+  tablas con filas alternadas y una jerarquía visual más clara.
+- [ ] Comprobar visualmente que los textos y controles sigan siendo legibles.
+- [x] Conectar la interfaz de clientes con la lógica y la base de datos.
+- [x] Conectar la interfaz de servicios con la lógica y la base de datos.
+- [x] Mostrar validaciones y errores de forma comprensible.
+- [x] Indicar junto al campo de teléfono celular el límite de 10 dígitos.
+
+## 5. Probar y verificar
+
+- [x] Comprobar la sintaxis de la ventana principal y el punto de entrada.
+- [x] Construir y destruir la ventana de prueba para verificar que Tkinter crea
+  los widgets.
+- [x] Probar registro, búsqueda por nombre/teléfono y validación de datos de
+  cliente con pruebas automatizadas.
+- [x] Probar modificación de cliente y el error para un ID inexistente.
+- [x] Probar un teléfono de 10 dígitos, uno demasiado largo y caracteres no
+  numéricos; las pruebas específicas de clientes pasan.
+- [x] Probar registro e historial ordenado, formato de fecha, importe e integridad
+  de cliente en servicios.
+- [x] Probar modificación, eliminación y errores para IDs de servicio inexistentes.
+- [x] Probar los recorridos principales de datos para clientes y servicios.
+- [x] Completar casos normales, límite (importe cero) y datos incorrectos.
+- [x] Comprobar persistencia, búsqueda, historial, modificación y eliminación
+  con pruebas automatizadas.
+- [ ] Revisar los resultados de la suite completa: siguen fallando pruebas de
+  servicios porque el código exige texto para el importe mientras esas pruebas
+  envían valores numéricos.
+
+## 6. Documentar y preparar la entrega
+
+- [x] Crear un README con objetivo, funciones, requisitos, instalación,
+  ejecución, almacenamiento y pruebas.
+- [x] Integrar en el README los criterios de aceptación que estaban en
+  `SPEC.md` y evitar mantener la especificación duplicada.
+- [x] Reubicar la conexión SQLite en `datos/database.py` y las validaciones
+  compartidas en `validaciones/validaciones.py`.
+- [x] Actualizar las instrucciones de uso y la estructura de carpetas del README.
+- [x] Verificar el flujo `python main.py` y la construcción de la ventana
+  después de reorganizar módulos; las 15 pruebas automatizadas también pasan.
+- [x] Documentar las dependencias estándar y cómo reproducir las pruebas.
+- [x] Declarar en el README el uso de IA y la verificación realizada.
+- [ ] Preparar el PDF de entrega con los datos requeridos y respuestas propias a
+  las tres preguntas de comprensión. Requiere tus datos y respuestas en tus
+  propias palabras.
+- [ ] Confirmar que el repositorio público se puede revisar y ejecutar sin
+  solicitar acceso.
+- [ ] Revisar que no se hayan publicado contraseñas, tokens, claves ni datos
+  personales sensibles.
+
+## Cómo trabajaremos
+
+En cada etapa te explicaré primero el objetivo y los conceptos relevantes del
+Ebook. Después avanzaremos con cambios pequeños, revisaremos cómo funciona el
+código y ejecutaremos pruebas. Te explicaré el papel de las variables,
+condiciones, ciclos, funciones y estructuras de datos que usemos. Marcaré cada
+tarea solo cuando su resultado esté comprobado y podamos explicar por qué
+funciona.
+
+## Referencia de conceptos
+
+- [Ebook oficial: Programación en Python + AI](https://statick88.github.io/Course_of_python/)
