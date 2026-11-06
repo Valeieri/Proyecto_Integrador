@@ -2,10 +2,14 @@
 
 import sqlite3
 import tkinter as tk
-from tkinter import ttk
+from tkinter import messagebox, ttk
 
-from clientes.clientes import modificar_cliente, registrar_cliente
-from clientes.consultas import buscar_clientes
+from clientes.clientes import (
+    eliminar_cliente,
+    modificar_cliente,
+    registrar_cliente,
+)
+from clientes.consultas import buscar_clientes, listar_clientes
 
 
 def crear_pestana_clientes(contenedor: ttk.Frame) -> None:
@@ -27,7 +31,7 @@ def crear_pestana_clientes(contenedor: ttk.Frame) -> None:
     campos = (
         ("Nombre", nombre_var),
         ("Correo", correo_var),
-        ("Teléfono celular (máx. 10 dígitos)", telefono_var),
+        ("Teléfono celular (10 dígitos)", telefono_var),
     )
     for columna in (1, 3, 5):
         formulario.columnconfigure(columna, weight=1)
@@ -85,10 +89,24 @@ def crear_pestana_clientes(contenedor: ttk.Frame) -> None:
                 tags=("fila_par" if indice % 2 == 0 else "fila_impar",),
             )
 
+    def cargar_clientes() -> None:
+        try:
+            clientes = listar_clientes()
+        except sqlite3.Error as error:
+            estado_var.set(f"No se pudo cargar la lista de clientes: {error}")
+            return
+
+        actualizar_tabla(clientes)
+        estado_var.set(f"Clientes registrados: {len(clientes)}")
+
+    def mostrar_todos() -> None:
+        busqueda_var.set("")
+        cargar_clientes()
+
     def buscar() -> None:
         termino = busqueda_var.get().strip()
         if not termino:
-            estado_var.set("Escribe un nombre o teléfono para buscar.")
+            cargar_clientes()
             return
 
         try:
@@ -111,8 +129,8 @@ def crear_pestana_clientes(contenedor: ttk.Frame) -> None:
             estado_var.set(f"No se pudo guardar el cliente: {error}")
             return
 
-        busqueda_var.set(nombre_var.get().strip())
-        buscar()
+        busqueda_var.set("")
+        cargar_clientes()
         limpiar_formulario()
         estado_var.set(f"Cliente guardado con ID {nuevo_id}.")
 
@@ -132,10 +150,35 @@ def crear_pestana_clientes(contenedor: ttk.Frame) -> None:
             estado_var.set(f"No se pudo modificar el cliente: {error}")
             return
 
-        busqueda_var.set(nombre_var.get().strip())
-        buscar()
+        busqueda_var.set("")
+        cargar_clientes()
         limpiar_formulario()
         estado_var.set("Cliente actualizado.")
+
+    def eliminar() -> None:
+        if cliente_id_var.get() == "Ninguno":
+            estado_var.set("Selecciona un cliente de la tabla para eliminarlo.")
+            return
+
+        cliente_id = int(cliente_id_var.get())
+        if not messagebox.askyesno(
+            "Confirmar eliminación",
+            f"¿Deseas eliminar a {nombre_var.get()}? "
+            "Esta acción no se puede deshacer.",
+            parent=contenedor,
+        ):
+            return
+
+        try:
+            eliminar_cliente(cliente_id)
+        except (TypeError, ValueError, LookupError, sqlite3.Error) as error:
+            estado_var.set(f"No se pudo eliminar el cliente: {error}")
+            return
+
+        busqueda_var.set("")
+        limpiar_formulario()
+        cargar_clientes()
+        estado_var.set("Cliente eliminado.")
 
     ttk.Button(
         botones,
@@ -147,6 +190,12 @@ def crear_pestana_clientes(contenedor: ttk.Frame) -> None:
         botones,
         text="Modificar seleccionado",
         command=modificar,
+    ).pack(side="right", padx=(8, 0))
+    ttk.Button(
+        botones,
+        text="Eliminar seleccionado",
+        style="Danger.TButton",
+        command=eliminar,
     ).pack(side="right", padx=(8, 0))
     ttk.Button(
         botones,
@@ -167,6 +216,11 @@ def crear_pestana_clientes(contenedor: ttk.Frame) -> None:
         busqueda,
         text="Buscar",
         command=buscar,
+    ).pack(side="left", padx=(8, 0))
+    ttk.Button(
+        busqueda,
+        text="Mostrar todos",
+        command=mostrar_todos,
     ).pack(side="left", padx=(8, 0))
 
     tabla_marco = ttk.Frame(contenedor)
@@ -219,3 +273,4 @@ def crear_pestana_clientes(contenedor: ttk.Frame) -> None:
         textvariable=estado_var,
         style="Status.TLabel",
     ).pack(anchor="w", pady=(10, 0))
+    cargar_clientes()

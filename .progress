@@ -25,7 +25,7 @@ la verificación manual y la entrega personal/publicación.
   La entrada usa `DD/MM/AAAA`, la base guarda la fecha en formato ISO
   `AAAA-MM-DD` y el importe debe ser numérico y no negativo (cero está permitido).
 - [x] Definir las validaciones de correo y teléfono celular: el correo es
-  obligatorio sin formato estricto; el teléfono acepta solo dígitos, hasta 10.
+  obligatorio sin formato estricto; el celular debe tener exactamente 10 dígitos.
 - [x] Diseñar una estructura sencilla que separe la lógica del programa, la base de datos y la interfaz.
 
   Los paquetes usan nombres en minúsculas (`clientes`, `servicios`, `interfaz`,
@@ -42,8 +42,10 @@ la verificación manual y la entrega personal/publicación.
 - [x] Permitir consultar el historial de servicios de un cliente.
 - [x] Crear funciones para modificar y eliminar servicios.
 - [x] Rechazar datos obligatorios vacíos o que no sean texto al registrar clientes.
-- [x] Validar que el teléfono celular contenga solo dígitos y no supere los 10,
+- [x] Validar que el teléfono celular contenga solo dígitos y tenga exactamente 10,
   tanto al registrar como al modificar clientes.
+- [x] Crear la operación para eliminar clientes sin servicios asociados.
+- [x] Impedir la eliminación de clientes con servicios para conservar el historial.
 - [x] Validar campos obligatorios de servicio, fecha real/formato e importe no negativo.
 - [x] Mantener el correo como campo requerido sin formato estricto.
 - [x] Mostrar errores esperados de validación, IDs inexistentes y SQLite en la interfaz.
@@ -66,6 +68,9 @@ la verificación manual y la entrega personal/publicación.
 
 - [x] Crear la ventana principal con pestañas de clientes y servicios.
 - [x] Crear el formulario, búsqueda y tabla de resultados de clientes.
+- [x] Mostrar automáticamente todos los clientes y permitir volver a la lista
+  completa con **Mostrar todos**.
+- [x] Añadir eliminación de clientes con confirmación en la interfaz.
 - [x] Crear formularios y botones para las funciones de servicios.
 - [x] Mostrar los resultados de búsqueda de clientes en una tabla.
 - [x] Mostrar servicios e historiales en tablas.
@@ -86,18 +91,18 @@ la verificación manual y la entrega personal/publicación.
 - [x] Probar registro, búsqueda por nombre/teléfono y validación de datos de
   cliente con pruebas automatizadas.
 - [x] Probar modificación de cliente y el error para un ID inexistente.
-- [x] Probar un teléfono de 10 dígitos, uno demasiado largo y caracteres no
-  numéricos; las pruebas específicas de clientes pasan.
+- [x] Probar teléfonos de exactamente 10 dígitos, cortos, largos y con
+  caracteres no numéricos.
 - [x] Probar registro e historial ordenado, formato de fecha, importe e integridad
   de cliente en servicios.
-- [x] Probar modificación, eliminación y errores para IDs de servicio inexistentes.
+- [x] Probar modificación, eliminación y errores para IDs de servicio
+  inexistentes.
 - [x] Probar los recorridos principales de datos para clientes y servicios.
 - [x] Completar casos normales, límite (importe cero) y datos incorrectos.
 - [x] Comprobar persistencia, búsqueda, historial, modificación y eliminación
-  con pruebas automatizadas.
-- [ ] Revisar los resultados de la suite completa: siguen fallando pruebas de
-  servicios porque el código exige texto para el importe mientras esas pruebas
-  envían valores numéricos.
+  de clientes con pruebas automatizadas.
+- [x] Corregir la validación de importes en servicios y ejecutar la suite
+  completa: las 23 pruebas pasan.
 
 ## 6. Documentar y preparar la entrega
 

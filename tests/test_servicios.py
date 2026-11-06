@@ -21,7 +21,7 @@ class ServiceTests(unittest.TestCase):
         self.client_id = registrar_cliente(
             "Ana Garcia",
             "ana@example.com",
-            "00551234",
+            "0000551234",
             self.database_path,
         )
 

@@ -14,12 +14,12 @@ def validar_texto_requerido(valor: str, campo: str) -> str:
 
 
 def validar_telefono_celular(telefono: str) -> str:
-    """Aceptar teléfonos compuestos por un máximo de diez dígitos."""
+    """Aceptar teléfonos compuestos por exactamente diez dígitos."""
     telefono = validar_texto_requerido(telefono, "El teléfono celular")
     if not telefono.isascii() or not telefono.isdigit():
         raise ValueError("El teléfono celular debe contener solo dígitos")
-    if len(telefono) > 10:
-        raise ValueError("El teléfono celular no puede tener más de 10 dígitos")
+    if len(telefono) != 10:
+        raise ValueError("El teléfono celular debe tener exactamente 10 dígitos")
 
     return telefono
 

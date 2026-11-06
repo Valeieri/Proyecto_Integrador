@@ -10,9 +10,13 @@ sus vehículos. Está construida con Python, Tkinter y SQLite.
 - Registrar clientes con nombre, correo y teléfono obligatorios.
 - Buscar por coincidencias parciales en el nombre o el teléfono.
 - Seleccionar un resultado, cargar sus datos en el formulario y modificarlo.
+- Mostrar la lista completa al abrir la pestaña y volver a ella con **Mostrar
+  todos**.
+- Eliminar un cliente sin servicios asociados después de confirmar. Si tiene
+  servicios, se bloquea el borrado para conservar el historial.
 - Rechazar campos vacíos o que no sean texto y mostrar errores comprensibles.
-- El teléfono celular debe contener solo dígitos y tener como máximo 10. Puede
-  tener menos; se conserva como texto para no perder ceros iniciales.
+- El teléfono celular debe contener exactamente 10 dígitos; se conserva como
+  texto para no perder ceros iniciales.
 - No se exige un formato específico para el correo.
 
 ### Servicios e historial
@@ -57,12 +61,15 @@ python main.py
 
 La aplicación crea la base y sus tablas si es el primer inicio.
 
-1. En **Clientes**, completa nombre, correo y teléfono, y pulsa **Guardar
-   cliente**.
-2. Para encontrar un cliente, escribe su nombre o teléfono en el campo de
-   búsqueda y pulsa **Buscar**. Selecciona una fila para cargar sus datos;
-   luego pulsa **Modificar seleccionado** para guardar cambios. **Limpiar**
-   vacía el formulario.
+1. En **Clientes** aparece la lista completa al abrir la pestaña. Completa
+   nombre, correo y teléfono (exactamente 10 dígitos) y pulsa **Guardar cliente**.
+2. Para encontrar un cliente en una lista extensa, escribe su nombre o teléfono
+   en el campo de búsqueda y pulsa **Buscar**. Pulsa **Mostrar todos** para
+   volver a la lista completa. Selecciona una fila para cargar sus datos;
+   luego pulsa **Modificar seleccionado** para guardar cambios o
+   **Eliminar seleccionado** para borrar. Para proteger el historial, no se
+   permite borrar clientes que tengan servicios asociados. **Limpiar** vacía
+   el formulario.
 3. En **Servicios**, selecciona un cliente en la lista. Su historial aparece
    en la tabla. Si acabas de registrar un cliente y no aparece, pulsa
    **Actualizar clientes**.
@@ -79,7 +86,7 @@ La aplicación crea la base y sus tablas si es el primer inicio.
 - Los campos de cliente y servicio son obligatorios y no pueden contener solo
   espacios.
 - El nombre, correo y teléfono se guardan como texto. El teléfono celular debe
-  contener solo dígitos y no superar los 10; se permiten menos de 10 dígitos.
+  contener exactamente 10 dígitos.
 - No se impone un formato específico para el correo.
 - El valor no puede ser negativo ni infinito; cero está permitido.
 - La fecha debe existir en el calendario y se muestra en formato `DD/MM/AAAA`.

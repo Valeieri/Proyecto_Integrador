@@ -2,9 +2,14 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from clientes.clientes import modificar_cliente, registrar_cliente
+from clientes.clientes import (
+    eliminar_cliente,
+    modificar_cliente,
+    registrar_cliente,
+)
 from clientes.consultas import buscar_clientes, listar_clientes
 from datos.database import inicializar_base_datos
+from servicios.servicios import registrar_servicio
 
 
 class ClientTests(unittest.TestCase):
@@ -20,7 +25,7 @@ class ClientTests(unittest.TestCase):
         client_id = registrar_cliente(
             "  Ana Garcia  ",
             " ana@example.com ",
-            " 00551234 ",
+            " 0000551234 ",
             self.database_path,
         )
 
@@ -28,10 +33,10 @@ class ClientTests(unittest.TestCase):
         self.assertEqual(client_id, clients[0]["id"])
         self.assertEqual("Ana Garcia", clients[0]["nombre"])
         self.assertEqual("ana@example.com", clients[0]["correo"])
-        self.assertEqual("00551234", clients[0]["telefono"])
+        self.assertEqual("0000551234", clients[0]["telefono"])
 
     def test_searches_by_partial_name_or_phone(self):
-        registrar_cliente("Ana Garcia", "ana@example.com", "00551234", self.database_path)
+        registrar_cliente("Ana Garcia", "ana@example.com", "0000551234", self.database_path)
 
         clients_by_name = buscar_clientes("ana", self.database_path)
         clients_by_phone = buscar_clientes("1234", self.database_path)
@@ -53,11 +58,20 @@ class ClientTests(unittest.TestCase):
         self.assertEqual("0123456789", clients[0]["telefono"])
 
     def test_rejects_phone_longer_than_ten_digits(self):
-        with self.assertRaisesRegex(ValueError, "más de 10 dígitos"):
+        with self.assertRaisesRegex(ValueError, "exactamente 10 dígitos"):
             registrar_cliente(
                 "Ana Garcia",
                 "ana@example.com",
                 "12345678901",
+                self.database_path,
+            )
+
+    def test_rejects_phone_shorter_than_ten_digits(self):
+        with self.assertRaisesRegex(ValueError, "exactamente 10 dígitos"):
+            registrar_cliente(
+                "Ana Garcia",
+                "ana@example.com",
+                "123456789",
                 self.database_path,
             )
 
@@ -71,8 +85,8 @@ class ClientTests(unittest.TestCase):
             )
 
     def test_lists_clients_for_selection(self):
-        registrar_cliente("Ana Garcia", "ana@example.com", "00551234", self.database_path)
-        registrar_cliente("Bea Diaz", "bea@example.com", "00887766", self.database_path)
+        registrar_cliente("Ana Garcia", "ana@example.com", "0000551234", self.database_path)
+        registrar_cliente("Bea Diaz", "bea@example.com", "0000887766", self.database_path)
 
         clients = listar_clientes(self.database_path)
 
@@ -93,7 +107,7 @@ class ClientTests(unittest.TestCase):
         client_id = registrar_cliente(
             "Ana Garcia",
             "ana@example.com",
-            "00551234",
+            "0000551234",
             self.database_path,
         )
 
@@ -101,24 +115,24 @@ class ClientTests(unittest.TestCase):
             client_id,
             "Ana Lopez",
             "ana.lopez@example.com",
-            "00987654",
+            "0000987654",
             self.database_path,
         )
 
         clients = buscar_clientes("Ana Lopez", self.database_path)
         self.assertEqual(1, len(clients))
         self.assertEqual("ana.lopez@example.com", clients[0]["correo"])
-        self.assertEqual("00987654", clients[0]["telefono"])
+        self.assertEqual("0000987654", clients[0]["telefono"])
 
     def test_rejects_overlong_phone_when_modifying_client(self):
         client_id = registrar_cliente(
             "Ana Garcia",
             "ana@example.com",
-            "12345678",
+            "0012345678",
             self.database_path,
         )
 
-        with self.assertRaisesRegex(ValueError, "más de 10 dígitos"):
+        with self.assertRaisesRegex(ValueError, "exactamente 10 dígitos"):
             modificar_cliente(
                 client_id,
                 "Ana Garcia",
@@ -133,9 +147,48 @@ class ClientTests(unittest.TestCase):
                 999,
                 "Ana Lopez",
                 "ana.lopez@example.com",
-                "00987654",
+                "0000987654",
                 self.database_path,
             )
+
+    def test_deletes_client_without_services(self):
+        client_id = registrar_cliente(
+            "Ana Garcia",
+            "ana@example.com",
+            "0000551234",
+            self.database_path,
+        )
+
+        eliminar_cliente(client_id, self.database_path)
+
+        self.assertEqual([], listar_clientes(self.database_path))
+
+    def test_does_not_delete_client_with_service_history(self):
+        client_id = registrar_cliente(
+            "Ana Garcia",
+            "ana@example.com",
+            "0000551234",
+            self.database_path,
+        )
+        registrar_servicio(
+            client_id,
+            "Auto",
+            "Mantenimiento",
+            "Aceite",
+            "Marca A",
+            "25",
+            "06/11/2026",
+            self.database_path,
+        )
+
+        with self.assertRaisesRegex(ValueError, "servicios asociados"):
+            eliminar_cliente(client_id, self.database_path)
+
+        self.assertEqual(1, len(listar_clientes(self.database_path)))
+
+    def test_deleting_unknown_client_raises_lookup_error(self):
+        with self.assertRaises(LookupError):
+            eliminar_cliente(999, self.database_path)
 
 
 if __name__ == "__main__":

@@ -59,7 +59,6 @@ def registrar_servicio(
     descripcion = validar_texto_requerido(descripcion, "La descripcion")
     producto = validar_texto_requerido(producto, "El producto")
     marca = validar_texto_requerido(marca, "La marca")
-    valor = validar_texto_requerido(valor, "El valor")
     importe = _validar_importe(valor)
     fecha_iso = _normalizar_fecha(fecha)
 
