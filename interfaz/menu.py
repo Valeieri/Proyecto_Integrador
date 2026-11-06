@@ -257,6 +257,12 @@ def crear_ventana_principal() -> tk.Tk:
 
     crear_pestana_clientes(clientes)
 
-    crear_pestana_servicios(servicios)
+    actualizar_clientes_servicios = crear_pestana_servicios(servicios)
+
+    def actualizar_al_abrir_servicios(_evento: tk.Event) -> None:
+        if pestañas.select() == str(servicios):
+            actualizar_clientes_servicios()
+
+    pestañas.bind("<<NotebookTabChanged>>", actualizar_al_abrir_servicios)
 
     return ventana

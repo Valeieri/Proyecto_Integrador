@@ -73,7 +73,8 @@ La aplicación crea la base y sus tablas si es el primer inicio.
    el formulario.
 3. En **Servicios**, selecciona un cliente en la lista. Su historial aparece
    en la tabla. Si acabas de registrar un cliente y no aparece, pulsa
-   **Actualizar clientes**.
+   **Actualizar clientes**. La lista se sincroniza también al abrir esta
+   pestaña, así que los clientes eliminados ya no quedan como opciones.
 4. Completa los datos del servicio y pulsa **Guardar servicio**. Ingresa el
    valor como número (usa punto para los decimales) y la fecha como
    `DD/MM/AAAA`.

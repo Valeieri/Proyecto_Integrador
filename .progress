@@ -71,6 +71,8 @@ la verificación manual y la entrega personal/publicación.
 - [x] Crear el formulario, búsqueda y tabla de resultados de clientes.
 - [x] Mostrar automáticamente todos los clientes y permitir volver a la lista
   completa con **Mostrar todos**.
+- [x] Sincronizar la lista de clientes de servicios al abrir esa pestaña para
+  retirar opciones eliminadas y mostrar altas recientes.
 - [x] Añadir eliminación de clientes con confirmación en la interfaz.
 - [x] Crear formularios y botones para las funciones de servicios.
 - [x] Mostrar los resultados de búsqueda de clientes en una tabla.

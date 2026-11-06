@@ -5,7 +5,7 @@ import tkinter as tk
 from datetime import date
 from pathlib import Path
 from tkinter import messagebox, ttk
-from typing import Dict, Optional
+from typing import Callable, Dict, Optional
 
 from clientes.consultas import listar_clientes
 from datos.database import DATABASE_PATH
@@ -20,7 +20,7 @@ from servicios.servicios import (
 def crear_pestana_servicios(
     contenedor: ttk.Frame,
     ruta_db: Path = DATABASE_PATH,
-) -> None:
+) -> Callable[[], None]:
     """Agregar el formulario y el historial de servicios."""
     cliente_var = tk.StringVar()
     servicio_id_var = tk.StringVar(value="Ninguno")
@@ -214,6 +214,7 @@ def crear_pestana_servicios(
 
     def cargar_clientes() -> None:
         cliente_actual = cliente_var.get()
+        cliente_id_actual = clientes_por_opcion.get(cliente_actual)
         try:
             clientes = listar_clientes(ruta_db)
         except sqlite3.Error as error:
@@ -231,15 +232,17 @@ def crear_pestana_servicios(
             clientes_por_opcion[opcion] = cliente["id"]
 
         cliente_combo["values"] = opciones
+        if cliente_actual in clientes_por_opcion and (
+            clientes_por_opcion[cliente_actual] == cliente_id_actual
+        ):
+            cliente_var.set(cliente_actual)
+            return
+
         if opciones:
-            if cliente_actual in clientes_por_opcion:
-                cliente_var.set(cliente_actual)
-            else:
-                cliente_var.set(opciones[0])
-            recargar_historial()
+            cliente_var.set(opciones[0])
         else:
             cliente_var.set("")
-            recargar_historial()
+        recargar_historial()
 
     def guardar() -> None:
         cliente_id = obtener_cliente_id()
@@ -365,3 +368,4 @@ def crear_pestana_servicios(
     ).pack(anchor="w", pady=(10, 0))
 
     cargar_clientes()
+    return cargar_clientes
