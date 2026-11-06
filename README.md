@@ -42,6 +42,19 @@ Aplicación de escritorio para administrar clientes y los servicios asociados a 
 El proyecto utiliza la biblioteca estándar de Python y no requiere instalar
 paquetes externos.
 
+## Instalación
+
+Clona el repositorio desde una terminal y entra en la carpeta del proyecto:
+
+```text
+git clone https://github.com/Valeieri/Proyecto_Integrador.git
+cd Proyecto_Integrador
+```
+
+También puedes descargar el repositorio como archivo ZIP desde GitHub y
+extraerlo. No es necesario ejecutar `pip install`: solo necesitas tener
+Python 3.8 o posterior con Tkinter disponible.
+
 ## Ejecución y uso
 
 Desde la carpeta raíz del proyecto, ejecuta:
