@@ -163,6 +163,30 @@ class ClientTests(unittest.TestCase):
 
         self.assertEqual([], listar_clientes(self.database_path))
 
+    def test_customer_ids_restart_at_one_after_all_customers_are_deleted(self):
+        client_ids = [
+            registrar_cliente(
+                f"Cliente {indice}",
+                f"cliente{indice}@example.com",
+                f"000000000{indice}",
+                self.database_path,
+            )
+            for indice in range(1, 4)
+        ]
+        self.assertEqual([1, 2, 3], client_ids)
+
+        for client_id in client_ids:
+            eliminar_cliente(client_id, self.database_path)
+
+        new_client_id = registrar_cliente(
+            "Nuevo cliente",
+            "nuevo@example.com",
+            "0000000004",
+            self.database_path,
+        )
+
+        self.assertEqual(1, new_client_id)
+
     def test_does_not_delete_client_with_service_history(self):
         client_id = registrar_cliente(
             "Ana Garcia",

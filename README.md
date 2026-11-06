@@ -13,7 +13,8 @@ sus vehículos. Está construida con Python, Tkinter y SQLite.
 - Mostrar la lista completa al abrir la pestaña y volver a ella con **Mostrar
   todos**.
 - Eliminar un cliente sin servicios asociados después de confirmar. Si tiene
-  servicios, se bloquea el borrado para conservar el historial.
+  servicios, se bloquea el borrado para conservar el historial. Al eliminar
+  todos los clientes, el siguiente registro vuelve a recibir el ID 1.
 - Rechazar campos vacíos o que no sean texto y mostrar errores comprensibles.
 - El teléfono celular debe contener exactamente 10 dígitos; se conserva como
   texto para no perder ceros iniciales.

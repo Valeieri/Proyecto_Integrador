@@ -99,5 +99,12 @@ def eliminar_cliente(
                 "DELETE FROM clientes WHERE id = ?",
                 (cliente_id,),
             )
+            clientes_restantes = conexion.execute(
+                "SELECT COUNT(*) FROM clientes"
+            ).fetchone()[0]
+            if clientes_restantes == 0:
+                conexion.execute(
+                    "DELETE FROM sqlite_sequence WHERE name = 'clientes'"
+                )
     finally:
         conexion.close()

@@ -46,6 +46,7 @@ la verificación manual y la entrega personal/publicación.
   tanto al registrar como al modificar clientes.
 - [x] Crear la operación para eliminar clientes sin servicios asociados.
 - [x] Impedir la eliminación de clientes con servicios para conservar el historial.
+- [x] Reiniciar el contador de IDs de clientes cuando se elimina el último.
 - [x] Validar campos obligatorios de servicio, fecha real/formato e importe no negativo.
 - [x] Mantener el correo como campo requerido sin formato estricto.
 - [x] Mostrar errores esperados de validación, IDs inexistentes y SQLite en la interfaz.
