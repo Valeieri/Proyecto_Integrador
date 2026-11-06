@@ -2,13 +2,13 @@ PROYECTO A REALIZAR: Sistema administrativo de gestión automotriz
 1. Registro de clientes
 Nombre, correo y teléfono.
 2. Registro de servicios
-Vehículo, descripción, producto, marca, valor y fecha.
+Vehículo, descripción del problema, producto, valor y fecha.
 3. Buscar clientes
 Buscar por nombre o teléfono.
 4. Consultar historial
 Mostrar los servicios registrados de un cliente.
 5. Modificar o eliminar registros
-Editar información del cliente o del servicio, adicional la funcion de eliminar un servicio.
+Editar información del cliente o del servicio, adicional la funcion de eliminar un cliente o servicio.
 6. Guardar información permanentemente
 Conservar los datos al cerrar el programa.
 7. Interfaz gráfica
@@ -50,66 +50,3 @@ Utilizar una tecnología más compleja no representa una ventaja automática en 
 - Validación: gestionar entradas incorrectas y situaciones excepcionales previsibles.
 - Pruebas: ejecutar al menos tres casos: uno normal, uno límite y uno con datos incorrectos.
 - Documentación: explicar las funcionalidades, los requisitos técnicos y las instrucciones de ejecución.
-
-EVALUACION ADICIONAL:
-Preguntas obligatorias de comprensión
-El estudiante deberá responder las tres preguntas siguientes con sus propias palabras, tomando como referencia su proyecto. Las respuestas deberán incluirse en el archivo PDF de entrega.
-
-Pregunta 1. Diseño y estructuras de datos (8 puntos)
-
-¿Qué problema resuelve tu aplicación, cómo organizaste la solución y por qué elegiste las estructuras de datos utilizadas? Explica un ejemplo concreto de tu código.
-
-Se evaluará la relación entre el problema, las estructuras utilizadas y la justificación técnica.
-
-Pregunta 2. Lógica de programación (9 puntos)
-
-Selecciona una función importante de tu aplicación y explica, paso a paso, cómo funciona. Indica qué papel cumplen las variables, los operadores, las condiciones y los ciclos que intervienen.
-
-Se evaluará la comprensión del flujo de ejecución, la capacidad de explicación y la coherencia con el código.
-
-Pregunta 3. Errores, pruebas y mejoras (8 puntos)
-
-¿Qué sucede si tu programa recibe información incorrecta o encuentra un problema al guardar o recuperar los datos? Describe una prueba realizada, su resultado y una mejora que implementarías.
-
-ENTREGABLES OBLIGATORIOS:
-El estudiante deberá entregar un único archivo PDF a través de la plataforma educativa.
-
-El PDF debe contener:
-
-Nombre completo del estudiante.
-Nombre del proyecto desarrollado.
-Descripción breve del problema y la solución.
-Enlace completo al repositorio público de GitHub.
-Respuestas personales a las tres preguntas de comprensión.
-Declaración del uso de herramientas de inteligencia artificial.
-El repositorio de GitHub debe contener:
-
-Código fuente completo del proyecto.
-Archivo README.md con la documentación.
-Dependencias necesarias, si corresponde.
-Casos de prueba o evidencias reproducibles.
-Archivos de configuración de ejemplo, cuando sean necesarios.
-Archivo compose.yaml o equivalente si utiliza Docker.
-El README.md deberá explicar: objetivo del proyecto, funcionalidades, tecnologías, requisitos, instalación, ejecución, almacenamiento de datos y pruebas realizadas.
-
-El repositorio debe ser público, accesible y verificable sin solicitar permisos de acceso.
-
-Seguridad: no publicar contraseñas, tokens, claves API, credenciales de bases de datos ni información personal sensible. Se pueden utilizar archivos .env.example con valores ficticios.
-
-RÚBRICA DE EVALUACIÓN — 100 puntos
-La evaluación considera el funcionamiento del proyecto, la aplicación de los fundamentos de Python, la documentación técnica y la comprensión demostrada por el estudiante.
-
-Problema y diseño	Define un problema, establece funcionalidades y organiza la solución de forma coherente.	10
-Funcionamiento	El programa se ejecuta correctamente y cumple las funcionalidades documentadas.	20
-Fundamentos de Python	Utiliza correctamente variables, operadores, condicionales, ciclos, estructuras de datos y funciones.	18
-Persistencia y validaciones	5 puntos: almacenamiento y recuperación funcional mediante TXT, CSV, JSON, SQLite3 o bases de datos en Docker.
-5 puntos: validación de entradas y manejo de errores.	10
-Pruebas y documentación	4 puntos: tres pruebas verificables.
-4 puntos: README.md e instrucciones reproducibles.
-4 puntos: repositorio público de GitHub y PDF correctamente entregado.	12
-Comprensión personal	Responde las tres preguntas en el PDF con sus propias palabras, utilizando ejemplos reales de su código.
-Pregunta 1: 8 puntos.
-Pregunta 2: 9 puntos.
-Pregunta 3: 8 puntos.	25
-Uso crítico de herramientas e IA	Declara los recursos utilizados, explica las decisiones tomadas y demuestra que verificó los resultados obtenidos, con o sin IA.	5
-TOTAL		100

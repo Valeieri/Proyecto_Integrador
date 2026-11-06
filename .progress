@@ -51,7 +51,6 @@ la verificación manual y la entrega personal/publicación.
 - [x] Validar campos obligatorios de servicio, fecha real/formato e importe no negativo.
 - [x] Validar el formato del correo al registrar y modificar clientes.
 - [x] Mostrar errores esperados de validación, IDs inexistentes y SQLite en la interfaz.
-- [ ] Aplicar y poder explicar variables y tipos, operadores, condicionales, ciclos, estructuras de datos y funciones en partes reales del proyecto.
 
 ## 3. Guardar los datos
 
@@ -93,7 +92,7 @@ la verificación manual y la entrega personal/publicación.
 - [x] Aplicar un tema oscuro inicial.
 - [x] Modernizar la presentación con paneles diferenciados, acentos de color,
   tablas con filas alternadas y una jerarquía visual más clara.
-- [ ] Comprobar visualmente que los textos y controles sigan siendo legibles.
+- [x] Comprobar visualmente que los textos y controles sigan siendo legibles.
 - [x] Conectar la interfaz de clientes con la lógica y la base de datos.
 - [x] Conectar la interfaz de servicios con la lógica y la base de datos.
 - [x] Mostrar validaciones y errores de forma comprensible.
@@ -143,13 +142,6 @@ la verificación manual y la entrega personal/publicación.
   (ver sección 5).
 - [x] Documentar las dependencias estándar y cómo reproducir las pruebas.
 - [x] Declarar en el README el uso de IA y la verificación realizada.
-- [ ] Preparar el PDF de entrega con los datos requeridos y respuestas propias a
-  las tres preguntas de comprensión. Requiere tus datos y respuestas en tus
-  propias palabras.
-- [ ] Confirmar que el repositorio público se puede revisar y ejecutar sin
-  solicitar acceso.
-- [ ] Revisar que no se hayan publicado contraseñas, tokens, claves ni datos
-  personales sensibles.
 
 ## Cómo trabajaremos
 
