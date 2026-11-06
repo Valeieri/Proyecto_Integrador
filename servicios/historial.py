@@ -21,7 +21,7 @@ def consultar_historial_cliente(
     try:
         cursor = conexion.execute(
             """
-            SELECT id, cliente_id, vehiculo, descripcion, producto, marca, valor, fecha
+            SELECT id, cliente_id, vehiculo, descripcion, producto, valor, fecha
             FROM servicios
             WHERE cliente_id = ?
             ORDER BY fecha DESC, id DESC

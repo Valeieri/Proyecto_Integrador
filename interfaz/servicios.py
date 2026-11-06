@@ -25,9 +25,7 @@ def crear_pestana_servicios(
     cliente_var = tk.StringVar()
     servicio_id_var = tk.StringVar(value="Ninguno")
     vehiculo_var = tk.StringVar()
-    descripcion_var = tk.StringVar()
     producto_var = tk.StringVar()
-    marca_var = tk.StringVar()
     valor_var = tk.StringVar()
     fecha_var = tk.StringVar(value=date.today().strftime("%d/%m/%Y"))
     estado_var = tk.StringVar(value="Selecciona un cliente para ver su historial.")
@@ -63,31 +61,72 @@ def crear_pestana_servicios(
 
     campos = (
         ("Vehículo", vehiculo_var),
-        ("Descripción", descripcion_var),
         ("Producto", producto_var),
-        ("Marca", marca_var),
         ("Valor", valor_var),
-        ("Fecha (DD/MM/AAAA)", fecha_var),
     )
     for indice, (etiqueta, variable) in enumerate(campos):
-        fila = 2 + (indice // 3) * 2
-        columna = (indice % 3) * 2
+        columna = indice * 2
         ttk.Label(formulario, text=etiqueta).grid(
-            row=fila,
+            row=2,
             column=columna,
             sticky="w",
             padx=(0, 8),
         )
         ttk.Entry(formulario, textvariable=variable).grid(
-            row=fila + 1,
+            row=3,
             column=columna,
+            columnspan=2,
             sticky="ew",
             padx=(0, 12),
             pady=(4, 12),
         )
 
+    ttk.Label(formulario, text="Descripción del problema").grid(
+        row=4,
+        column=0,
+        columnspan=6,
+        sticky="w",
+        pady=(0, 4),
+    )
+    descripcion_text = tk.Text(
+        formulario,
+        height=4,
+        wrap="word",
+        background="#0D1729",
+        foreground="#F1F5F9",
+        insertbackground="#F1F5F9",
+        relief="flat",
+        highlightthickness=1,
+        highlightbackground="#263550",
+        highlightcolor="#14B8A6",
+        padx=10,
+        pady=8,
+        font=("Segoe UI", 10),
+    )
+    descripcion_text.grid(
+        row=5,
+        column=0,
+        columnspan=6,
+        sticky="ew",
+        pady=(0, 12),
+    )
+
+    ttk.Label(formulario, text="Fecha (DD/MM/AAAA)").grid(
+        row=6,
+        column=0,
+        sticky="w",
+    )
+    ttk.Entry(formulario, textvariable=fecha_var).grid(
+        row=7,
+        column=0,
+        columnspan=2,
+        sticky="ew",
+        padx=(0, 12),
+        pady=(4, 12),
+    )
+
     botones = ttk.Frame(formulario)
-    botones.grid(row=6, column=0, columnspan=6, sticky="ew")
+    botones.grid(row=8, column=0, columnspan=6, sticky="ew")
     ttk.Label(botones, text="ID seleccionado:").pack(side="left")
     ttk.Label(botones, textvariable=servicio_id_var).pack(
         side="left",
@@ -101,7 +140,6 @@ def crear_pestana_servicios(
         "vehiculo",
         "descripcion",
         "producto",
-        "marca",
         "valor",
         "fecha",
     )
@@ -116,18 +154,16 @@ def crear_pestana_servicios(
     titulos = {
         "id": "ID",
         "vehiculo": "Vehículo",
-        "descripcion": "Descripción",
+        "descripcion": "Descripción del problema",
         "producto": "Producto",
-        "marca": "Marca",
         "valor": "Valor",
         "fecha": "Fecha",
     }
     anchos = {
         "id": 55,
         "vehiculo": 120,
-        "descripcion": 170,
+        "descripcion": 340,
         "producto": 120,
-        "marca": 110,
         "valor": 90,
         "fecha": 100,
     }
@@ -137,7 +173,7 @@ def crear_pestana_servicios(
             columna,
             width=anchos[columna],
             anchor="w",
-            stretch=columna in ("descripcion", "vehiculo"),
+            stretch=columna == "descripcion",
         )
     tabla.column("id", anchor="center", stretch=False)
 
@@ -161,9 +197,8 @@ def crear_pestana_servicios(
 
     def limpiar_formulario() -> None:
         vehiculo_var.set("")
-        descripcion_var.set("")
+        descripcion_text.delete("1.0", "end")
         producto_var.set("")
-        marca_var.set("")
         valor_var.set("")
         fecha_var.set(date.today().strftime("%d/%m/%Y"))
         servicio_id_var.set("Ninguno")
@@ -184,7 +219,6 @@ def crear_pestana_servicios(
                     servicio["vehiculo"],
                     servicio["descripcion"],
                     servicio["producto"],
-                    servicio["marca"],
                     f'{float(servicio["valor"]):.2f}',
                     fecha_vista,
                 ),
@@ -254,9 +288,8 @@ def crear_pestana_servicios(
             nuevo_id = registrar_servicio(
                 cliente_id,
                 vehiculo_var.get(),
-                descripcion_var.get(),
+                descripcion_text.get("1.0", "end-1c"),
                 producto_var.get(),
-                marca_var.get(),
                 valor_var.get(),
                 fecha_var.get(),
                 ruta_db,
@@ -278,9 +311,8 @@ def crear_pestana_servicios(
             modificar_servicio(
                 int(servicio_id_var.get()),
                 vehiculo_var.get(),
-                descripcion_var.get(),
+                descripcion_text.get("1.0", "end-1c"),
                 producto_var.get(),
-                marca_var.get(),
                 valor_var.get(),
                 fecha_var.get(),
                 ruta_db,
@@ -324,11 +356,11 @@ def crear_pestana_servicios(
         valores = tabla.item(seleccion[0], "values")
         servicio_id_var.set(valores[0])
         vehiculo_var.set(valores[1])
-        descripcion_var.set(valores[2])
+        descripcion_text.delete("1.0", "end")
+        descripcion_text.insert("1.0", valores[2])
         producto_var.set(valores[3])
-        marca_var.set(valores[4])
-        valor_var.set(valores[5])
-        fecha_var.set(valores[6])
+        valor_var.set(valores[4])
+        fecha_var.set(valores[5])
         estado_var.set(f"Servicio {valores[0]} seleccionado.")
 
     ttk.Button(

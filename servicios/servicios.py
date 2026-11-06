@@ -48,7 +48,6 @@ def registrar_servicio(
     vehiculo: str,
     descripcion: str,
     producto: str,
-    marca: str,
     valor: Union[int, float, str],
     fecha: str,
     ruta_db: Path = DATABASE_PATH,
@@ -56,9 +55,8 @@ def registrar_servicio(
     """Guardar un servicio asociado a un cliente y devolver su identificador."""
     cliente_id = validar_id_positivo(cliente_id, "cliente")
     vehiculo = validar_texto_requerido(vehiculo, "El vehiculo")
-    descripcion = validar_texto_requerido(descripcion, "La descripcion")
+    descripcion = validar_texto_requerido(descripcion, "La descripcion del problema")
     producto = validar_texto_requerido(producto, "El producto")
-    marca = validar_texto_requerido(marca, "La marca")
     importe = _validar_importe(valor)
     fecha_iso = _normalizar_fecha(fecha)
 
@@ -68,17 +66,15 @@ def registrar_servicio(
             cursor = conexion.execute(
                 """
                 INSERT INTO servicios (
-                    cliente_id, vehiculo, descripcion, producto,
-                    marca, valor, fecha
+                    cliente_id, vehiculo, descripcion, producto, valor, fecha
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """,
                 (
                     cliente_id,
                     vehiculo,
                     descripcion,
                     producto,
-                    marca,
                     importe,
                     fecha_iso,
                 ),
@@ -93,7 +89,6 @@ def modificar_servicio(
     vehiculo: str,
     descripcion: str,
     producto: str,
-    marca: str,
     valor: Union[int, float, str],
     fecha: str,
     ruta_db: Path = DATABASE_PATH,
@@ -101,9 +96,8 @@ def modificar_servicio(
     """Actualizar los datos de un servicio sin cambiar su cliente asociado."""
     servicio_id = validar_id_positivo(servicio_id, "servicio")
     vehiculo = validar_texto_requerido(vehiculo, "El vehiculo")
-    descripcion = validar_texto_requerido(descripcion, "La descripcion")
+    descripcion = validar_texto_requerido(descripcion, "La descripcion del problema")
     producto = validar_texto_requerido(producto, "El producto")
-    marca = validar_texto_requerido(marca, "La marca")
     importe = _validar_importe(valor)
     fecha_iso = _normalizar_fecha(fecha)
 
@@ -114,14 +108,13 @@ def modificar_servicio(
                 """
                 UPDATE servicios
                 SET vehiculo = ?, descripcion = ?, producto = ?,
-                    marca = ?, valor = ?, fecha = ?
+                    valor = ?, fecha = ?
                 WHERE id = ?
                 """,
                 (
                     vehiculo,
                     descripcion,
                     producto,
-                    marca,
                     importe,
                     fecha_iso,
                     servicio_id,

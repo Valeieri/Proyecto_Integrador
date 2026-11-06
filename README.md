@@ -23,7 +23,7 @@ sus vehículos. Está construida con Python, Tkinter y SQLite.
 ### Servicios e historial
 
 - Registrar un servicio asociado a un cliente existente con vehículo,
-  descripción, producto, marca, valor y fecha.
+  descripción del problema, producto, valor y fecha.
 - Rechazar texto obligatorio vacío. El valor debe ser numérico, finito y mayor
   o igual a cero; se permiten servicios gratuitos.
 - Ingresar la fecha como `DD/MM/AAAA`; se valida como fecha real y se almacena
@@ -40,6 +40,8 @@ sus vehículos. Está construida con Python, Tkinter y SQLite.
 - Crear las tablas SQLite al iniciar si todavía no existen, sin eliminar los
   registros ya guardados.
 - Mantener los datos localmente en `datos/automotriz.db`.
+- Migrar la tabla existente de servicios para retirar el campo marca sin perder
+  los datos históricos.
 - Separar clientes y servicios en pestañas Tkinter, mostrar registros e
   historiales en tablas y usar una presentación oscura.
 - Mostrar en la interfaz los errores de validación y almacenamiento.
@@ -75,9 +77,9 @@ La aplicación crea la base y sus tablas si es el primer inicio.
    en la tabla. Si acabas de registrar un cliente y no aparece, pulsa
    **Actualizar clientes**. La lista se sincroniza también al abrir esta
    pestaña, así que los clientes eliminados ya no quedan como opciones.
-4. Completa los datos del servicio y pulsa **Guardar servicio**. Ingresa el
-   valor como número (usa punto para los decimales) y la fecha como
-   `DD/MM/AAAA`.
+4. Completa los datos del servicio y pulsa **Guardar servicio**. La descripción
+   del problema admite varias líneas. Ingresa el valor como número (usa punto
+   para los decimales) y la fecha como `DD/MM/AAAA`.
 5. Selecciona una fila del historial para cargar el servicio. Usa
    **Modificar seleccionado** para actualizarlo o **Eliminar seleccionado**
    para borrarlo después de confirmar. La edición conserva el cliente

@@ -199,7 +199,6 @@ class ClientTests(unittest.TestCase):
             "Auto",
             "Mantenimiento",
             "Aceite",
-            "Marca A",
             "25",
             "06/11/2026",
             self.database_path,

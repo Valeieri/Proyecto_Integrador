@@ -77,6 +77,10 @@ la verificación manual y la entrega personal/publicación.
 - [x] Crear formularios y botones para las funciones de servicios.
 - [x] Mostrar los resultados de búsqueda de clientes en una tabla.
 - [x] Mostrar servicios e historiales en tablas.
+- [x] Ampliar la descripción a un campo multilínea y renombrarla como
+  **Descripción del problema**.
+- [x] Retirar el campo marca del formulario, las operaciones y el esquema
+  SQLite, conservando una migración para la base existente.
 - [x] Aplicar un tema oscuro inicial.
 - [x] Modernizar la presentación con paneles diferenciados, acentos de color,
   tablas con filas alternadas y una jerarquía visual más clara.
@@ -100,12 +104,14 @@ la verificación manual y la entrega personal/publicación.
   de cliente en servicios.
 - [x] Probar modificación, eliminación y errores para IDs de servicio
   inexistentes.
+- [x] Verificar la migración de la base anterior: mantiene el historial y los
+  IDs, elimina la columna marca y conserva la integridad de claves foráneas.
 - [x] Probar los recorridos principales de datos para clientes y servicios.
 - [x] Completar casos normales, límite (importe cero) y datos incorrectos.
 - [x] Comprobar persistencia, búsqueda, historial, modificación y eliminación
   de clientes con pruebas automatizadas.
 - [x] Corregir la validación de importes en servicios y ejecutar la suite
-  completa: las 23 pruebas pasan.
+  completa: las 25 pruebas pasan.
 
 ## 6. Documentar y preparar la entrega
 

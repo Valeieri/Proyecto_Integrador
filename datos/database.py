@@ -16,9 +16,10 @@ def conectar_db(ruta_db: Path = DATABASE_PATH) -> sqlite3.Connection:
 
 
 def inicializar_base_datos(ruta_db: Path = DATABASE_PATH) -> None:
-    """Crear las tablas si todavía no existen."""
+    """Crear el esquema y migrar servicios antiguos que incluían marca."""
     conexion = conectar_db(ruta_db)
     try:
+        conexion.execute("PRAGMA foreign_keys = OFF")
         with conexion:
             conexion.execute(
                 """
@@ -38,12 +39,47 @@ def inicializar_base_datos(ruta_db: Path = DATABASE_PATH) -> None:
                     vehiculo TEXT NOT NULL,
                     descripcion TEXT NOT NULL,
                     producto TEXT NOT NULL,
-                    marca TEXT NOT NULL,
                     valor REAL NOT NULL,
                     fecha TEXT NOT NULL,
                     FOREIGN KEY (cliente_id) REFERENCES clientes (id)
                 )
                 """
             )
+            columnas = {
+                fila[1]
+                for fila in conexion.execute("PRAGMA table_info(servicios)")
+            }
+            if "marca" in columnas:
+                conexion.execute(
+                    "ALTER TABLE servicios RENAME TO servicios_con_marca"
+                )
+                conexion.execute(
+                    """
+                    CREATE TABLE servicios (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        cliente_id INTEGER NOT NULL,
+                        vehiculo TEXT NOT NULL,
+                        descripcion TEXT NOT NULL,
+                        producto TEXT NOT NULL,
+                        valor REAL NOT NULL,
+                        fecha TEXT NOT NULL,
+                        FOREIGN KEY (cliente_id) REFERENCES clientes (id)
+                    )
+                    """
+                )
+                conexion.execute(
+                    """
+                    INSERT INTO servicios (
+                        id, cliente_id, vehiculo, descripcion, producto,
+                        valor, fecha
+                    )
+                    SELECT
+                        id, cliente_id, vehiculo, descripcion, producto,
+                        valor, fecha
+                    FROM servicios_con_marca
+                    """
+                )
+                conexion.execute("DROP TABLE servicios_con_marca")
     finally:
+        conexion.execute("PRAGMA foreign_keys = ON")
         conexion.close()
