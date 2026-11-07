@@ -1,5 +1,15 @@
 # Sistema de gestión automotriz
 
+## Objetivo del proyecto
+
+Este proyecto tiene como finalidad diseñar y desarrollar un sistema administrativo para gestionar clientes y servicios automotrices de manera eficiente, utilizando Python como lenguaje principal, una interfaz gráfica con Tkinter y almacenamiento persistente en SQLite.
+
+Su objetivo principal es registrar clientes, controlar la información de cada vehículo y sus servicios asociados, consultar historiales, editar o eliminar registros y conservar los datos al cerrar la aplicación. Además, busca demostrar los fundamentos esenciales del desarrollo en Python: variables y tipos de datos, operadores, estructuras condicionales, bucles, listas y diccionarios, funciones reutilizables, validaciones de entrada y pruebas automatizadas.
+
+La aplicación simula una prueba técnica de programación en Python, centrada en la comprensión de los conceptos básicos y la organización del código, sin depender de tecnologías complejas para resolver un problema real y práctico de gestión.
+
+## Descripción general
+
 Aplicación de escritorio para administrar clientes y los servicios asociados a sus vehículos. Está construida con Python, Tkinter y SQLite.
 
 ## Alcance y criterios de aceptación
